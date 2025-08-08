@@ -1,0 +1,246 @@
+[
+{
+	"uri": "//localhost:1313/vi/6-costoptimization/6.1-enablecompressionandhttpsredirect/",
+	"title": "Bật Compression và Redirect HTTPS",
+	"tags": [],
+	"description": "",
+	"content": "Vào tab Behaviors\nTìm dòng có Path pattern = Default (*)\nNhấn Edit\nCuộn xuống phần Response headers policy\nChọn: Managed-SecurityHeadersPolicy Nhấn Save changes "
+},
+{
+	"uri": "//localhost:1313/vi/",
+	"title": "CloudFront Advanced Caching và Security",
+	"tags": [],
+	"description": "",
+	"content": "Làm việc với CloudFront Advanced Caching và Security Tổng quan Trong bài lab này, bạn sẽ tìm hiểu các khái niệm cơ bản và thực hành về CloudFront Advanced Caching và Security. Thực hành tạo kết nối đến máy chủ public và máy chủ private trong VPC.\nNội dung Giới thiệu Các bước chuẩn bị Truy cập AWS Lambda Thiết lập singed URls Field level encrytion Cost optimiazation Monitoring and logging clean up aws resources "
+},
+{
+	"uri": "//localhost:1313/vi/1-introduce/",
+	"title": "Giới thiệu",
+	"tags": [],
+	"description": "",
+	"content": "Amazon CloudFront là dịch vụ CDN (Content Delivery Network) mạnh mẽ của AWS, được thiết kế để phân phối nội dung với độ trễ thấp và hiệu suất cao trên toàn cầu. Tuy nhiên, CloudFront không chỉ đơn thuần là tốc độ — mà còn cung cấp hai năng lực chiến lược: Caching nâng cao và Bảo mật, giúp tối ưu lưu lượng, giảm chi phí và bảo vệ hệ thống khỏi các mối đe dọa hiện đại.\nCaching Nâng Cao CloudFront cung cấp nhiều chiến lược cache có thể tùy biến nhằm giảm tải cho origin và cải thiện thời gian phản hồi:\nCache theo tham số tùy chỉnh: Có thể cấu hình cache riêng biệt dựa trên query strings, cookies, headers hoặc loại thiết bị (mobile/desktop). Cache Policies \u0026amp; Origin Request Policies: Phân tách rõ ràng giữa các yếu tố ảnh hưởng đến cache key và các dữ liệu được gửi về origin → giảm thiểu cache miss không cần thiết. Lambda@Edge / CloudFront Functions: Cho phép chạy logic tại các edge location (ví dụ: redirect, xác thực token, rewrite URL\u0026hellip;) mà không cần gọi đến origin. Field-Level Encryption: Mã hóa các trường dữ liệu nhạy cảm ngay tại edge → chỉ origin mới có thể giải mã. Cache hiệu quả = Phản hồi nhanh hơn + Giảm tải server + Tiết kiệm chi phí.\nTính Năng Bảo Mật CloudFront được tích hợp chặt chẽ với hệ sinh thái bảo mật của AWS, mang lại sự bảo vệ toàn diện cho nội dung và người dùng của bạn:\nAWS WAF: Tường lửa ứng dụng web giúp chặn các cuộc tấn công như SQL injection, XSS, bot, và DDoS layer 7. Geo Restriction: Hạn chế quyền truy cập nội dung theo khu vực địa lý — phù hợp với kiểm soát bản quyền hoặc phân phối vùng. HTTPS \u0026amp; TLS (Chứng chỉ SSL): Hỗ trợ HTTPS đầy đủ với chứng chỉ tùy chỉnh và các phiên bản TLS mới nhất. Signed URLs / Signed Cookies: Cung cấp nội dung riêng tư một cách an toàn thông qua các cơ chế truy cập có thời hạn. AWS Shield Standard: Bảo vệ chống lại các cuộc tấn công DDoS tầng 3 và 4 miễn phí cho mọi distribution. CloudFront không chỉ nhanh — mà còn được gia cố bằng hệ thống bảo mật mạnh mẽ.\nKết Luận CloudFront là một CDN hiện đại không chỉ mang lại tốc độ, mà còn cung cấp khả năng tùy chỉnh caching sâu sắc cùng bảo mật cấp doanh nghiệp cho cả ứng dụng tĩnh và động. Đây là giải pháp lý tưởng để bảo vệ và tăng tốc bất kỳ ứng dụng web nào ở quy mô toàn cầu.\nMẹo: Khi triển khai CloudFront, hãy tận dụng các công cụ như CloudFront Insights, Real-Time Logs, và CloudWatch Monitoring để theo dõi chi tiết hành vi caching và tình trạng bảo mật trong thời gian thực.\n"
+},
+{
+	"uri": "//localhost:1313/vi/2-prerequiste/2.1-createbucket/",
+	"title": "Tạo bucket",
+	"tags": [],
+	"description": "",
+	"content": "\nBucket name: webbadmintonvideo\nRegion: US East (N. Virginia) us-east-1 Bucket type: General purpose ACLs: Chọn ACLs disabled (recommended) Block Public Access: Tắt toàn bộ block, tick “I acknowledge… Upload toàn bộ thư mục đã build\n"
+},
+{
+	"uri": "//localhost:1313/vi/4-enablesignedurls/4.1-createacloudfrontkeypair/",
+	"title": "Tạo CloudFront Key Pair",
+	"tags": [],
+	"description": "",
+	"content": "Bước 1: Tạo CloudFront Key Pair Vào tab Security → Key management\nNhấn Create public key\nĐặt tên: CloudFrontPublicKey\nTải file .pem (public key)\nBước 2: Dán vào key Xong creat public key\n"
+},
+{
+	"uri": "//localhost:1313/vi/3-accessawslambda/3.1-createalambdafunction/",
+	"title": "Tạo Lambda function",
+	"tags": [],
+	"description": "",
+	"content": "Cấu hình Lambda@Edge để thêm Security Headers cho CloudFront 🔹 Bước 1: Tạo Lambda Function Truy cập AWS Lambda. Chọn Region: US East (N. Virginia) (us-east-1). Nhấn Create function. Chọn Author from scratch, sau đó cấu hình: Function name: AddSecurityHeaders Runtime: Node.js 18.x "
+},
+{
+	"uri": "//localhost:1313/vi/7-monitoringandlogging/7.1-createans3buckettostorelogs/",
+	"title": "Tạo S3 bucket để chứa log",
+	"tags": [],
+	"description": "",
+	"content": "Vào AWS S3 Console\nNhấn Create bucket\nNhập tên bucket, ví dụ: cloudfront-logs-2025-demo\nTắt \u0026ldquo;Block all public access\u0026rdquo;\nBật versioning\nNhấn Create bucket\n"
+},
+{
+	"uri": "//localhost:1313/vi/8-cleanupawsresources/8.1-deletecloudfrontdistribution/",
+	"title": "Xóa CloudFront Distribution",
+	"tags": [],
+	"description": "",
+	"content": " Vào CloudFront Console Chọn Distribution đã tạo → Disable •\tSau khi trạng thái là Disabled, chọn Delete "
+},
+{
+	"uri": "//localhost:1313/vi/2-prerequiste/",
+	"title": "Các bước chuẩn bị",
+	"tags": [],
+	"description": "",
+	"content": "Để tìm hiểu cách tạo IAM các bạn có thể tham khảo bài lab :\nGiới thiệu về Amazon IAM Để sử dụng System Manager để quản lý window instance nói riêng và các instance nói chung của chúng ta trên AWS, ta cần phải cung cấp quyền cho các instance của chúng ta có thể làm việc với System Manager.Trong phần chuẩn bị này, chúng ta cũng sẽ tiến hành tạo IAM Role để cấp quyền cho các instance có thể làm việc với System Manager.\nNội dung Tạo S3 Tạo IAM Role Tạo RDS "
+},
+{
+	"uri": "//localhost:1313/vi/4-enablesignedurls/4.2-createakeygroup/",
+	"title": "Create key group",
+	"tags": [],
+	"description": "",
+	"content": "\nĐiền thông tin: Name: my-key-group\nDescription (optional): Key group for signed URL\nPublic keys: Tick chọn public key bạn vừa tạo (ví dụ: my-signed-url-key)\nNhấn Create key group "
+},
+{
+	"uri": "//localhost:1313/vi/2-prerequiste/2.2-createcloudfrontdistribution/",
+	"title": "Tạo CloudFront Distribution",
+	"tags": [],
+	"description": "",
+	"content": "Bước 1: Tạo CloudFront Distribution Click vào: Create a CloudFront distribution\nDistribution name: webbadmintonvideo_Distribution\nDescription: CDN for static site hosted on S3\nDistribution type: Chọn Single website or app\nNhấn: Next\nBước 2: Chọn Origin Chọn: Amazon S3 S3 origin: webbadmintonvideo.s3-website-us-east-1.amazonaws.com Chọn: Enable security protections Bước 3: Kiểm tra lại các thông tin Tên Distribution Origin Các cài đặt bảo mật Bước 4: Chọn Legacy access identities Bước 5: Thêm Path Pattern cho hình ảnh Path pattern: /images/* Origin: webbadmintonvideo.s3-website-us-east-1.amazonaws.com Compress objects automatically: Yes Viewer protocol policy: Redirect HTTP to HTTPS Allowed HTTP methods: GET, HEAD Restrict viewer access: No "
+},
+{
+	"uri": "//localhost:1313/vi/6-costoptimization/6.2-createacustomcachepolicy/",
+	"title": "Tạo Custom Cache Policy",
+	"tags": [],
+	"description": "",
+	"content": "Vào CloudFront → Policies \u0026gt; Cache policies\nNhấn Create cache policy\nName:CustomLongTTLPolicy\rDescription:Long-lived cache for static content\rMinimum TTL: 1\rDefault TTL:86400\rMaximum TTL:31536000\rHeaders:None\rQuery strings:None\rCookies:None\rCompression:Gzip, Brotli "
+},
+{
+	"uri": "//localhost:1313/vi/7-monitoringandlogging/7.2-createagluedatabase/",
+	"title": "Tạo Glue Database",
+	"tags": [],
+	"description": "",
+	"content": "Vào AWS Glue Console\nChọn tab Databases → Nhấn Add database\nĐặt tên: cloudfront_logs_db\nNhấn Create\n"
+},
+{
+	"uri": "//localhost:1313/vi/3-accessawslambda/3.2-addcodetohandlesecurityheaders/",
+	"title": "Thêm mã nguồn xử lý security headers",
+	"tags": [],
+	"description": "",
+	"content": "Thêm mã vào Lambda\n\u0026#39;use strict\u0026#39;;\rexport const handler = async (event) =\u0026gt; {\rconst response = event.Records[0].cf.response;\rconst headers = response.headers;\rheaders[\u0026#39;strict-transport-security\u0026#39;] = [\r{ key: \u0026#39;Strict-Transport-Security\u0026#39;, value: \u0026#39;max-age=63072000; includeSubDomains; preload\u0026#39; }\r];\rheaders[\u0026#39;content-security-policy\u0026#39;] = [\r{ key: \u0026#39;Content-Security-Policy\u0026#39;, value: \u0026#34;default-src \u0026#39;self\u0026#39;\u0026#34; }\r];\rheaders[\u0026#39;x-content-type-options\u0026#39;] = [\r{ key: \u0026#39;X-Content-Type-Options\u0026#39;, value: \u0026#39;nosniff\u0026#39; }\r];\rheaders[\u0026#39;x-frame-options\u0026#39;] = [\r{ key: \u0026#39;X-Frame-Options\u0026#39;, value: \u0026#39;DENY\u0026#39; }\r];\rheaders[\u0026#39;x-xss-protection\u0026#39;] = [\r{ key: \u0026#39;X-XSS-Protection\u0026#39;, value: \u0026#39;1; mode=block\u0026#39; }\r];\rreturn response;\r}; Nhấn nút Deploy (Ctrl + Shift + U) để cập nhật function.\n"
+},
+{
+	"uri": "//localhost:1313/vi/8-cleanupawsresources/8.2-deletes3buckets/",
+	"title": "Xóa S3 Buckets",
+	"tags": [],
+	"description": "",
+	"content": " Bao gồm: Bucket chứa website tĩnh Bucket chứa CloudFront logs Vào S3 Console → Empty bucket → Delete bucket Type: permanently delete\nChon: Delete\nName bucket: webbadmintonvideo\nDelete thanh cong\n"
+},
+{
+	"uri": "//localhost:1313/vi/3-accessawslambda/3.3-grantiampermissionstothelambdafunction/",
+	"title": "Cấp quyền IAM cho Lambda function",
+	"tags": [],
+	"description": "",
+	"content": "Vào Roles Tìm role có tên: LambdaEdgeSecurityRole\nChọn tab Trust relationships -\u0026gt; Edit trust policy\nThay nội dung trust policy\n{\r\u0026#34;Version\u0026#34;: \u0026#34;2012-10-17\u0026#34;,\r\u0026#34;Statement\u0026#34;: [\r{\r\u0026#34;Effect\u0026#34;: \u0026#34;Allow\u0026#34;,\r\u0026#34;Principal\u0026#34;: {\r\u0026#34;Service\u0026#34;: [\r\u0026#34;lambda.amazonaws.com\u0026#34;,\r\u0026#34;edgelambda.amazonaws.com\u0026#34;\r]\r},\r\u0026#34;Action\u0026#34;: \u0026#34;sts:AssumeRole\u0026#34;\r}\r]\r} Version descripsion: V1-\u0026gt; Publish\n"
+},
+{
+	"uri": "//localhost:1313/vi/6-costoptimization/6.3-attachcachepolicytobehaviors/",
+	"title": "Gán Cache Policy vào các Behavior",
+	"tags": [],
+	"description": "",
+	"content": "Truy cập CloudFront \u0026gt; Distributions\nVào tab Behaviors\nNhấn Edit ở behavior\nCache policy name:\nChọn: CustomLongTTLPolicy\nNhấn Save changes\n⚠️ Lưu ý: Không nên gán policy này cho /index.html nếu bạn cần nội dung luôn cập nhật.\n"
+},
+{
+	"uri": "//localhost:1313/vi/4-enablesignedurls/4.3-attachkeygrouptocloudfrontbehavior/",
+	"title": "Gán Key Group vào CloudFront Behavior",
+	"tags": [],
+	"description": "",
+	"content": "Vào CloudFront \u0026gt; Distributions Chọn tab Behaviors\nCuộn xuống phần Restrict viewer access (use signed URLs or signed cookies)\nChọn Yes\nPhần Trusted key groups\nTick chọn key group bạn vừa tạo (my-key-group)\nNhấn Save changes\n"
+},
+{
+	"uri": "//localhost:1313/vi/7-monitoringandlogging/7.3-createagluecrawler/",
+	"title": "Tạo Glue Crawler",
+	"tags": [],
+	"description": "",
+	"content": "Vào Glue → tab Crawlers → click Create crawler\nCrawler info Name: cf-log-crawler Description – optional: Crawler to scan CloudFront access logs in S3 and build Athena table. Dán đường dẫn đến thư mục chứa CloudFront logs của bạn\nNhấn nút Run crawler\nĐợi khoảng 1–3 phút\n"
+},
+{
+	"uri": "//localhost:1313/vi/3-accessawslambda/",
+	"title": "Truy cập AWS Lambda",
+	"tags": [],
+	"description": "",
+	"content": "Trong bước này, chúng ta sẽ thực hiện tạo kết nối đến các máy chủ EC2 của chúng ta, nằm trong cả public và private subnet.\nNội dung 3.1. Mục Tiêu 3.2. Kích hoạt Signed URLs\n"
+},
+{
+	"uri": "//localhost:1313/vi/8-cleanupawsresources/8.3-deletelambda@edgefunctions/",
+	"title": "Xóa Lambda@Edge Functions",
+	"tags": [],
+	"description": "",
+	"content": " Vào Lambda Console tại us-east-1\nTìm function AddSecurityHeaders hoặc function khác dùng trong lab\nXóa các version đã publish\nSau đó Delete function\n"
+},
+{
+	"uri": "//localhost:1313/vi/3-accessawslambda/3.4-attachlambdatoabehaviorincloudfront/",
+	"title": "Gán Lambda vào Behavior trong CloudFront",
+	"tags": [],
+	"description": "",
+	"content": "CloudFront -\u0026gt; Chọn distribution -\u0026gt; tab Behaviors. -\u0026gt; click **/index.html **-\u0026gt; nhấn Edit.\nFunction type: Lambda@Edge Function ARN: arn:aws:lambda:us-east-1:806361468439:function:AddSecurityHeaders:3 Nhấn: Save changes\n"
+},
+{
+	"uri": "//localhost:1313/vi/4-enablesignedurls/",
+	"title": "Quản lý session logs",
+	"tags": [],
+	"description": "",
+	"content": "Với Session Manager chúng ta có thể xem được lịch sử các kết nối tới các instance thông qua Session history. Tuy nhiên chúng ta chưa xem được chi tiết các câu lệnh được sử dụng.\nTrong phần này chúng ta sẽ tiến hành tạo S3 bucket và thực hiện cấu hình lưu trữ các session logs để xem được chi tiết các câu lệnh được sử dụng trong session.\nNội dung: Cập nhật IAM Role Tạo S3 Bucket Tạo S3 Gateway endpoint Cấu hình Session logs "
+},
+{
+	"uri": "//localhost:1313/vi/4-enablesignedurls/4.4-generateasignedurlusingpython/",
+	"title": "Tạo Signed URL bằng Python",
+	"tags": [],
+	"description": "",
+	"content": "Cần cài Python\nlink :https://www.python.org/downloads/windows/\nSau khi xong buoc cai dat tren\nMở terminal\nChạy lệnh sau để cài thư viện:\npip install cryptography\nVào thư mục chứa file private_key.pem, mở VS Code\nimport base64\rimport time\rfrom cryptography.hazmat.primitives import serialization, hashes\rfrom cryptography.hazmat.primitives.asymmetric import padding\rcloudfront_url = \u0026#34;https://dwlpqynbljc1b.cloudfront.net/index.html\u0026#34; key_pair_id = \u0026#34;K31UET7UCHMLP6\u0026#34; private_key_file = \u0026#34;private_key.pem\u0026#34; expire_time = int(time.time()) + 3600 policy = f\u0026#39;\u0026#39;\u0026#39;{{\u0026#34;Statement\u0026#34;:[{{\u0026#34;Resource\u0026#34;:\u0026#34;{cloudfront_url}\u0026#34;,\u0026#34;Condition\u0026#34;:{{\u0026#34;DateLessThan\u0026#34;:{{\u0026#34;AWS:EpochTime\u0026#34;:{expire_time}}}}}}}]}}\u0026#39;\u0026#39;\u0026#39;\rwith open(private_key_file, \u0026#34;rb\u0026#34;) as key_file:\rprivate_key = serialization.load_pem_private_key(\rkey_file.read(),\rpassword=None,\r)\rsignature = private_key.sign(\rpolicy.encode(),\rpadding.PKCS1v15(),\rhashes.SHA1()\r)\rdef url_safe_b64encode(data):\rreturn base64.b64encode(data).decode(\u0026#34;utf-8\u0026#34;)\\\r.replace(\u0026#34;+\u0026#34;, \u0026#34;-\u0026#34;)\\\r.replace(\u0026#34;=\u0026#34;, \u0026#34;_\u0026#34;)\\\r.replace(\u0026#34;/\u0026#34;, \u0026#34;~\u0026#34;)\rencoded_signature = url_safe_b64encode(signature)\rencoded_policy = url_safe_b64encode(policy.encode())\rsigned_url = f\u0026#34;{cloudfront_url}?Policy={encoded_policy}\u0026amp;Signature={encoded_signature}\u0026amp;Key-Pair-Id={key_pair_id}\u0026#34;\rprint(\u0026#34;🎯 Signed URL:\u0026#34;)\rprint(signed_url) Luu y:\nDomain name trong AWS CloudFront\nKey pair ID\nthư mục chứa file .py, bạn chạy:\nNó sẽ in ra:\n"
+},
+{
+	"uri": "//localhost:1313/vi/6-costoptimization/6.4-optimizettlandlimitlogging/",
+	"title": "Tối ưu TTL và giới hạn Logging",
+	"tags": [],
+	"description": "",
+	"content": "Bước 1: Truy cập bucket log Vào AWS Console → S3\nTìm và nhấn vào bucket : webbadmintonvideo\nBước 2: Mở tab Management Trong bucket → chọn tab Management\nNhấn nút Create lifecycle rule\nBước 3: Đặt tên rule: ExpireCloudFrontLogs Tick: Limit the scope of this rule using one or more filters\nAWSLogs/your-account-id/CloudFront/\nLưu ý: Thay” your-account-id” bằng mã tài khoản AWS\nLifecycle rule actions, tick: Expire current versions of objects\nNhập số ngày:30\nGiao diện xác nhận Lifecycle Rule đã được cấu hình thành công\n"
+},
+{
+	"uri": "//localhost:1313/vi/8-cleanupawsresources/8.4-deleteiamrolesandpoliciescreatedforthelab/",
+	"title": "Xóa IAM Roles và Policies tạo cho lab",
+	"tags": [],
+	"description": "",
+	"content": " Ví dụ: LambdaEdgeSecurityRole IAM user/role dùng cho Signed URLs Vào IAM Console → Delete role "
+},
+{
+	"uri": "//localhost:1313/vi/5-field-levelencryption/",
+	"title": "Field-Level Encryption",
+	"tags": [],
+	"description": "",
+	"content": "Mở Git Bash Chay 2 lenh:\nopenssl genrsa -out private_key.pem 2048\nopenssl rsa -pubout -in private_key.pem -out public_key.pem\nVào tab Public keys → nhấn Create public key\nDán nội dung trong public_key.pem bạn vừa tạo\nĐặt tên: FLE-PublicKey\nNhấn Create public key\n"
+},
+{
+	"uri": "//localhost:1313/vi/3-accessawslambda/3.5-createandassignoriginaccessidentity/",
+	"title": "Tạo và gán Origin Access Identity",
+	"tags": [],
+	"description": "",
+	"content": "CloudFront-\u0026gt; Chọn distribution-\u0026gt; tab Origins -\u0026gt; Edit -\u0026gt; Create new OAI\nName: webbadmintonvideo.s3.us-east-1.amazonaws.com\nNhấn: Create\nDistribution domain name\ndwlpqynbljc1b.cloudfront.net/index.html "
+},
+{
+	"uri": "//localhost:1313/vi/8-cleanupawsresources/8.5-deletecloudfrontkeygroupsandpublickeys/",
+	"title": "Xóa CloudFront Key Groups và Public Keys",
+	"tags": [],
+	"description": "",
+	"content": " Vào CloudFront → Key management Xóa: Public key (CloudFrontPublicKey, FLE-PublicKey) Key group (my-key-group) "
+},
+{
+	"uri": "//localhost:1313/vi/6-costoptimization/",
+	"title": "Tối ưu hóa chi phí",
+	"tags": [],
+	"description": "",
+	"content": "Chúng ta sẽ tiến hành các bước sau để xóa các tài nguyên chúng ta đã tạo trong bài thực hành này.\nXóa EC2 instance Truy cập giao diện quản trị dịch vụ EC2 Click Instances. Click chọn cả 2 instance Public Linux Instance và Private Windows Instance. Click Instance state. Click Terminate instance, sau đó click Terminate để xác nhận. Truy cập giao diện quản trị dịch vụ IAM Click Roles. Tại ô tìm kiếm , điền SSM. Click chọn SSM-Role. Click Delete, sau đó điền tên role SSM-Role và click Delete để xóa role. Click Users. Click chọn user Portfwd. Click Delete, sau đó điền tên user Portfwd và click Delete để xóa user. Xóa S3 bucket Truy cập giao diện quản trị dịch vụ System Manager - Session Manager. Click tab Preferences. Click Edit. Kéo chuột xuống dưới. Tại mục S3 logging. Bỏ chọn Enable để tắt tính năng logging. Kéo chuột xuống dưới. Click Save. Truy cập giao diện quản trị dịch vụ S3 Click chọn S3 bucket chúng ta đã tạo cho bài thực hành. ( Ví dụ : lab-fcj-bucket-0001 ) Click Empty. Điền permanently delete, sau đó click Empty để tiến hành xóa object trong bucket. Click Exit. Sau khi xóa hết object trong bucket, click Delete Điền tên S3 bucket, sau đó click Delete bucket để tiến hành xóa S3 bucket. Xóa các VPC Endpoint Truy cập vào giao diện quản trị dịch vụ VPC Click Endpoints. Chọn 4 endpoints chúng ta đã tạo cho bài thực hành bao gồm SSM, SSMMESSAGES, EC2MESSAGES, S3GW. Click Actions. Click Delete VPC endpoints. Tại ô confirm , điền delete. Click Delete để tiến hành xóa các endpoints. Click biểu tượng refresh, kiểm tra tất cả các endpoints đã bị xóa trước khi làm bước tiếp theo. Xóa VPC Truy cập vào giao diện quản trị dịch vụ VPC Click Your VPCs. Click chọn Lab VPC. Click Actions. Click Delete VPC. Tại ô confirm, điền delete để xác nhận, click Delete để thực hiện xóa Lab VPC và các tài nguyên liên quan. "
+},
+{
+	"uri": "//localhost:1313/vi/8-cleanupawsresources/8.6-deleteglueandlogdata/",
+	"title": "Xóa Glue và dữ liệu log",
+	"tags": [],
+	"description": "",
+	"content": " Glue Crawler (cf-log-crawler) → Delete\nGlue Database (cloudfront_logs_db) → Delete\nAction: Delete Crawlers\nXóa Glue Database Trong Glue Console → tab Databases\nTìm database cloudfront_logs_db\nChọn Delete → Xác nhận\n"
+},
+{
+	"uri": "//localhost:1313/vi/7-monitoringandlogging/",
+	"title": "Tạo Glue Crawler",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "//localhost:1313/vi/8-cleanupawsresources/",
+	"title": "Dọn dẹp tài nguyên AWS",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "//localhost:1313/vi/categories/",
+	"title": "Categories",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "//localhost:1313/vi/tags/",
+	"title": "Tags",
+	"tags": [],
+	"description": "",
+	"content": ""
+}]
