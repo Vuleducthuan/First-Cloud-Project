@@ -8,6 +8,7 @@ pre : " <b> 1. </b> "
 **Amazon CloudFront** is AWS’s powerful Content Delivery Network (CDN), designed to deliver content with low latency and high performance worldwide. But CloudFront is more than just speed — it offers two strategic capabilities: **Advanced Caching** and **Security**, helping to optimize traffic flow, reduce costs, and protect systems against modern threats.
 
 ---
+![](/images/2.prerequisite/0.png)
 
 ## Advanced Caching
 
@@ -36,10 +37,3 @@ CloudFront is tightly integrated with AWS’s security ecosystem to provide comp
 
 ---
 
-## Conclusion
-
-CloudFront is a modern CDN that delivers not only **speed**, but also **deep caching customization** and **enterprise-grade security** for both static and dynamic applications. It's an ideal solution for protecting and accelerating any web application at a global scale.
-
----
-
-> *Tip:* When deploying CloudFront, leverage tools like **CloudFront Insights**, **Real-Time Logs**, and **CloudWatch Monitoring** to gain full visibility into caching behavior and security posture in real time.

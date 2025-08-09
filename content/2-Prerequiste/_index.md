@@ -1,22 +1,14 @@
 ---
-title : "Preparation "
+title: "Preparation Steps"
 date: "2025-06-14"
-weight : 2
-chapter : false
-pre : " <b> 2. </b> "
+weight: 2
+chapter: false
+pre: " <b> 2. </b> "
 ---
 
-{{% notice info %}}
-You need to create 1 Linux instance on the public subnet and 1 Window instance on the private subnet to perform this lab.
-{{% /notice %}}
+To implement CloudFront Advanced Caching and Security, we need to prepare the basic infrastructure, including an S3 bucket to store the static website and a CloudFront Distribution to deliver content through AWS’s global edge network. In addition, we need to configure appropriate IAM Roles and Policies to ensure that CloudFront, Lambda@Edge, and S3 can interact securely.
+![](/images/2.prerequisite/16.png)
 
-To learn how to create EC2 instances and VPCs with public/private subnets, you can refer to the lab:
-  - [About Amazon EC2](https://000004.awsstudygroup.com/en/)
-  - [Works with Amazon VPC](https://000003.awsstudygroup.com/en/)
-
-In order to use System Manager to manage our window instances in particular and our instances in general on AWS, we need to give permission to our instances to be able to work with System Manager. In this preparation, we will also proceed to create an IAM Role to grant permissions to instances that can work with System Manager.
-
-### Content
-  - [Prepare VPC and EC2](2.1-createec2/)
-  - [Create IAM Role](2.2-createiamrole/)
-  - [Create RDS](2.3-createrds/)
+### Contents
+  - [Create S3](2.1-createbucket/)
+  - [Create CloudFront Distribution](2.2-createcloudfrontdistribution/)

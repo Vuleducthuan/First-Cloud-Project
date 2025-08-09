@@ -1,83 +1,107 @@
-+++
-title = "Cost Optimization"
-date = "2025-06-14"
-weight = 6
-chapter = false
-pre = "<b>6. </b>"
-+++
+---
+title: "Enable Compression and Redirect to HTTPS"
+date: "2025-06-14"
+weight: 6
+chapter: false
+pre: "<b> 6. </b>"
+---
 
-We will take the following steps to delete the resources we created in this exercise.
+Go to the **Behaviors** tab
 
-#### Delete EC2 instance
+Find the row with **Path pattern** = Default (\*)
 
-1. Go to [EC2 service management console](https://console.aws.amazon.com/ec2/v2/home)
-   + Click **Instances**.
-   + Select both **Public Linux Instance** and **Private Windows Instance** instances.
-   + Click **Instance state**.
-   + Click **Terminate instance**, then click **Terminate** to confirm.
+Click **Edit**
 
-2. Go to [IAM service management console](https://console.aws.amazon.com/iamv2/home#/home)
-   + Click **Roles**.
-   + In the search box, enter **SSM**.
-   + Click to select **SSM-Role**.
-   + Click **Delete**, then enter the role name **SSM-Role** and click **Delete** to delete the role.
+![s3](/images/6.clean/1.png)
 
-![Clean](/images/6.clean/001-clean.png)
+![s3](/images/6.clean/2.png)
 
-3. Click **Users**.
-   + Click on user **Portfwd**.
-   + Click **Delete**, then enter the user name **Portfwd** and click **Delete** to delete the user.
+Scroll down to the **Response headers policy** section
 
-#### Delete S3 bucket
+- Select: **Managed-SecurityHeadersPolicy**
 
-1. Access [System Manager - Session Manager service management console](https://console.aws.amazon.com/systems-manager/session-manager).
-   + Click the **Preferences** tab.
-   + Click **Edit**.
-   + Scroll down.
-   + In the section **S3 logging**.
-   + Uncheck **Enable** to disable logging.
-   + Scroll down.
-   + Click **Save**.
+- Click **Save changes**
 
-2. Go to [S3 service management console](https://s3.console.aws.amazon.com/s3/home)
-   + Click on the S3 bucket we created for this lab. (Example: lab-fcj-bucket-0001 )
-   + Click **Empty**.
-   + Enter **permanently delete**, then click **Empty** to proceed to delete the object in the bucket.
-   + Click **Exit**.
+![s3](/images/6.clean/3.png)
 
-3. After deleting all objects in the bucket, click **Delete**
+![s3](/images/6.clean/4.png)
 
-![Clean](/images/6.clean/002-clean.png)
+## Create a Custom Cache Policy
 
-4. Enter the name of the S3 bucket, then click **Delete bucket** to proceed with deleting the S3 bucket.
+Go to **CloudFront** → **Policies** > **Cache policies**
 
-![Clean](/images/6.clean/003-clean.png)
+Click **Create cache policy**
 
-#### Delete VPC Endpoints
+![s3](/images/6.clean/5.png)
 
-1. Go to [VPC service management console](https://console.aws.amazon.com/vpc/home)
-   + Click **Endpoints**.
-   + Select the 4 endpoints we created for the lab including **SSM**, **SSMMESSAGES**, **EC2MESSAGES**, **S3GW**.
-   + Click **Actions**.
-   + Click **Delete VPC endpoints**.
+```
 
-![Clean](/images/6.clean/004-clean.png)
+Name: CustomLongTTLPolicy
+Description: Long-lived cache for static content
+Minimum TTL: 1
+Default TTL: 86400
+Maximum TTL: 31536000
+Headers: None
+Query strings: None
+Cookies: None
+Compression: Gzip, Brotli
 
-2. In the confirm box, enter **delete**.
-   + Click **Delete** to proceed with deleting endpoints.
+```
 
-3. Click the refresh icon, check that all endpoints have been deleted before proceeding to the next step.
+![s3](/images/6.clean/6.png)
 
-![Clean](/images/6.clean/005-clean.png)
+![s3](/images/6.clean/7.png)
 
-#### Delete VPC
+## Assign the Cache Policy to Behaviors
 
-1. Go to [VPC service management console](https://console.aws.amazon.com/vpc/home)
-   + Click **Your VPCs**.
-   + Click on **Lab VPC**.
-   + Click **Actions**.
-   + Click **Delete VPC**.
+Go to **CloudFront** > **Distributions**
 
-2. In the confirm box, enter **delete** to confirm, click **Delete** to delete **Lab VPC** and related resources.
+Open the **Behaviors** tab
 
-![Clean](/images/6.clean/006-clean.png)
+Click **Edit** on the desired behavior
+
+**Cache policy name:**
+
+Select: **CustomLongTTLPolicy**
+
+Click **Save changes**
+
+⚠️ **Note:** Do not assign this policy to `/index.html` if you require the content to always be up to date.
+
+![s3](/images/6.clean/8.png)
+
+![s3](/images/6.clean/9.png)
+
+## Optimize TTL and Limit Logging
+
+### Step 1: Access the log bucket
+
+1. Go to **AWS Console** → **S3**
+2. Locate and click on the **bucket**: **webbadmintonvideo**
+
+![s3](/images/6.clean/10.png)
+
+### Step 2: Open the Management tab
+
+1. Inside the **bucket**, select the **Management** tab
+2. Click **Create lifecycle rule**
+
+![s3](/images/6.clean/11.png)
+
+### Step 3: Name the rule: ExpireCloudFrontLogs
+
+Check: *Limit the scope of this rule using one or more filters*
+
+Enter: `AWSLogs/your-account-id/CloudFront/`
+
+**Note:** Replace `your-account-id` with your AWS account ID.
+
+In **Lifecycle rule actions**, check: *Expire current versions of objects*
+
+Enter number of days: **30**
+
+![s3](/images/6.clean/12.png)
+
+Confirmation screen showing that the Lifecycle Rule has been successfully configured
+
+![s3](/images/6.clean/13.png)

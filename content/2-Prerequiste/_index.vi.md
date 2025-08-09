@@ -6,13 +6,12 @@ chapter : false
 pre : " <b> 2. </b> "
 ---
 
-Để tìm hiểu cách tạo IAM các bạn có thể tham khảo bài lab :
-  - [Giới thiệu về Amazon IAM](https://000004.awsstudygroup.com/vi/)
 
-Để sử dụng System Manager để quản lý window instance nói riêng và các instance nói chung của chúng ta trên AWS, ta cần phải cung cấp quyền cho các instance của chúng ta có thể làm việc với System Manager.Trong phần chuẩn bị này, chúng ta cũng sẽ tiến hành tạo IAM Role để cấp quyền cho các instance có thể làm việc với System Manager.
+Để triển khai CloudFront Advanced Caching và Security, chúng ta cần chuẩn bị hạ tầng cơ bản bao gồm S3 bucket để lưu trữ website tĩnh và CloudFront Distribution để phân phối nội dung qua mạng lưới edge toàn cầu của AWS. Ngoài ra, chúng ta cũng cần thiết lập IAM Role và Policy phù hợp để đảm bảo CloudFront, Lambda@Edge và S3 có thể tương tác an toàn.
+![](/images/2.prerequisite/16.png)
 
 ### Nội dung
   - [Tạo S3](2.1-createbucket/)
-  - [Tạo IAM Role](2.2-createiamrole/)
-  - [Tạo RDS](2.3-createrds/)
+  - [Tạo CloudFront Distribution](2.2-createcloudfrontdistribution/)
+
   

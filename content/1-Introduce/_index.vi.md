@@ -9,7 +9,7 @@ pre : " <b> 1. </b> "
 **Amazon CloudFront** là dịch vụ CDN (Content Delivery Network) mạnh mẽ của AWS, được thiết kế để phân phối nội dung với độ trễ thấp và hiệu suất cao trên toàn cầu. Tuy nhiên, CloudFront không chỉ đơn thuần là tốc độ — mà còn cung cấp hai năng lực chiến lược: **Caching nâng cao** và **Bảo mật**, giúp tối ưu lưu lượng, giảm chi phí và bảo vệ hệ thống khỏi các mối đe dọa hiện đại.
 
 ---
-
+![](/images/2.prerequisite/0.png)
 ## Caching Nâng Cao
 
 CloudFront cung cấp nhiều chiến lược cache có thể tùy biến nhằm giảm tải cho origin và cải thiện thời gian phản hồi:
@@ -37,10 +37,3 @@ CloudFront được tích hợp chặt chẽ với hệ sinh thái bảo mật c
 
 ---
 
-## Kết Luận
-
-CloudFront là một CDN hiện đại không chỉ mang lại **tốc độ**, mà còn cung cấp **khả năng tùy chỉnh caching sâu sắc** cùng **bảo mật cấp doanh nghiệp** cho cả ứng dụng tĩnh và động. Đây là giải pháp lý tưởng để bảo vệ và tăng tốc bất kỳ ứng dụng web nào ở quy mô toàn cầu.
-
----
-
-> *Mẹo:* Khi triển khai CloudFront, hãy tận dụng các công cụ như **CloudFront Insights**, **Real-Time Logs**, và **CloudWatch Monitoring** để theo dõi chi tiết hành vi caching và tình trạng bảo mật trong thời gian thực.

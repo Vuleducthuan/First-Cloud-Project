@@ -8,7 +8,7 @@ chapter : false
 
 ### Tổng quan
 
- Trong bài lab này, bạn sẽ tìm hiểu các khái niệm cơ bản và thực hành về CloudFront Advanced Caching và Security. Thực hành tạo kết nối đến máy chủ public và máy chủ private trong VPC.
+ Trong bài lab này, bạn sẽ tìm hiểu các khái niệm cơ bản và thực hành về CloudFront Advanced Caching và Security. 
 
 
 ### Nội dung
@@ -20,4 +20,4 @@ chapter : false
  5. [Field level encrytion](5-field-levelencryption/)
  6. [Cost optimiazation](6-costoptimization/)
  7. [Monitoring and logging](7-monitoringandlogging/)
- 8. [clean up aws resources](8-cleanupawsresources/)
+ 8. [Clean up aws resources](8-cleanupawsresources/)

@@ -7,25 +7,11 @@
 	"content": "Working with CloudFront Advanced Caching and Security Overview In this lab, you will learn the basic concepts and practice CloudFront Advanced Caching and Security. You will practice connecting to a public server and a private server in a VPC.\nContent Introduction Prerequisites Access AWS Lambda Set up Signed URLs Field-level Encryption Cost Optimization Monitoring and Logging Clean up AWS Resources "
 },
 {
-	"uri": "//localhost:1313/en/4-enablesignedurls/4.1-createacloudfrontkeypair/",
-	"title": "Create a CloudFront Key Pair",
-	"tags": [],
-	"description": "",
-	"content": "Step 1: Create a CloudFront Key Pair Go to the Security tab → Key management\nClick Create public key\nName it: CloudFrontPublicKey\nDownload the .pem file (public key)\nStep 2: Paste the Key Public key created successfully\n"
-},
-{
 	"uri": "//localhost:1313/en/3-accessawslambda/3.1-createalambdafunction/",
 	"title": "Create a Lambda function",
 	"tags": [],
 	"description": "",
 	"content": "Configuring Lambda@Edge to Add Security Headers for CloudFront 🔹 Step 1: Create a Lambda Function Go to AWS Lambda. Select Region: US East (N. Virginia) (us-east-1). Click Create function. Choose Author from scratch, then configure: Function name: AddSecurityHeaders Runtime: Node.js 18.x "
-},
-{
-	"uri": "//localhost:1313/en/7-monitoringandlogging/7.1-createans3buckettostorelogs/",
-	"title": "Create an S3 bucket to store logs",
-	"tags": [],
-	"description": "",
-	"content": "Go to the AWS S3 Console\nClick Create bucket\nEnter a bucket name, for example: cloudfront-logs-2025-demo\nDisable \u0026ldquo;Block all public access\u0026rdquo;\nEnable versioning\nClick Create bucket\n"
 },
 {
 	"uri": "//localhost:1313/en/2-prerequiste/2.1-createbucket/",
@@ -35,25 +21,11 @@
 	"content": "\nBucket name: webbadmintonvideo\nRegion: US East (N. Virginia) us-east-1 Bucket type: General purpose ACLs: Select ACLs disabled (recommended) Block Public Access: Turn off all blocks, check “I acknowledge… Upload the entire built folder\n"
 },
 {
-	"uri": "//localhost:1313/en/8-cleanupawsresources/8.1-deletecloudfrontdistribution/",
-	"title": "Delete CloudFront Distribution",
-	"tags": [],
-	"description": "",
-	"content": " Go to CloudFront Console Select the created distribution → Disable After the status changes to Disabled, select Delete "
-},
-{
-	"uri": "//localhost:1313/en/6-costoptimization/6.1-enablecompressionandhttpsredirect/",
-	"title": "Enable Compression and Redirect to HTTPS",
-	"tags": [],
-	"description": "",
-	"content": "Go to the Behaviors tab\nFind the row with Path pattern = Default (*)\nClick Edit\nScroll down to the Response headers policy section\nSelect: Managed-SecurityHeadersPolicy\nClick Save changes "
-},
-{
 	"uri": "//localhost:1313/en/1-introduce/",
 	"title": "Introduction",
 	"tags": [],
 	"description": "",
-	"content": "Amazon CloudFront is AWS’s powerful Content Delivery Network (CDN), designed to deliver content with low latency and high performance worldwide. But CloudFront is more than just speed — it offers two strategic capabilities: Advanced Caching and Security, helping to optimize traffic flow, reduce costs, and protect systems against modern threats.\nAdvanced Caching CloudFront provides customizable caching strategies to reduce origin load and improve response time:\nCaching based on custom parameters: Cache can be tailored using query strings, cookies, headers, or device types (mobile/desktop). Cache Policies \u0026amp; Origin Request Policies: Separate what affects cache key versus what is forwarded to the origin → minimizes unnecessary cache misses. Lambda@Edge / CloudFront Functions: Run logic at edge locations (e.g., redirects, token validation, URL rewrites) without needing to contact the origin. Field-Level Encryption: Encrypt sensitive data fields at the edge → only the origin can decrypt them. Effective caching = Faster responses + Reduced server load + Lower costs.\nSecurity Features CloudFront is tightly integrated with AWS’s security ecosystem to provide comprehensive protection for your content and users:\nAWS WAF: A web application firewall that blocks SQL injection, XSS, bots, and layer 7 DDoS attacks. Geo Restriction: Restrict content access based on geographic regions — useful for licensing and regional control. HTTPS \u0026amp; TLS (SSL Certificates): Full HTTPS support with customizable SSL certificates and the latest TLS versions. Signed URLs / Signed Cookies: Deliver private content securely with time-limited access mechanisms. AWS Shield Standard: Built-in, no-cost protection against layer 3 and 4 DDoS attacks on all distributions. CloudFront is not just fast — it’s fortified with robust security capabilities.\nConclusion CloudFront is a modern CDN that delivers not only speed, but also deep caching customization and enterprise-grade security for both static and dynamic applications. It\u0026rsquo;s an ideal solution for protecting and accelerating any web application at a global scale.\nTip: When deploying CloudFront, leverage tools like CloudFront Insights, Real-Time Logs, and CloudWatch Monitoring to gain full visibility into caching behavior and security posture in real time.\n"
+	"content": "Amazon CloudFront is AWS’s powerful Content Delivery Network (CDN), designed to deliver content with low latency and high performance worldwide. But CloudFront is more than just speed — it offers two strategic capabilities: Advanced Caching and Security, helping to optimize traffic flow, reduce costs, and protect systems against modern threats.\nAdvanced Caching CloudFront provides customizable caching strategies to reduce origin load and improve response time:\nCaching based on custom parameters: Cache can be tailored using query strings, cookies, headers, or device types (mobile/desktop). Cache Policies \u0026amp; Origin Request Policies: Separate what affects cache key versus what is forwarded to the origin → minimizes unnecessary cache misses. Lambda@Edge / CloudFront Functions: Run logic at edge locations (e.g., redirects, token validation, URL rewrites) without needing to contact the origin. Field-Level Encryption: Encrypt sensitive data fields at the edge → only the origin can decrypt them. Effective caching = Faster responses + Reduced server load + Lower costs.\nSecurity Features CloudFront is tightly integrated with AWS’s security ecosystem to provide comprehensive protection for your content and users:\nAWS WAF: A web application firewall that blocks SQL injection, XSS, bots, and layer 7 DDoS attacks. Geo Restriction: Restrict content access based on geographic regions — useful for licensing and regional control. HTTPS \u0026amp; TLS (SSL Certificates): Full HTTPS support with customizable SSL certificates and the latest TLS versions. Signed URLs / Signed Cookies: Deliver private content securely with time-limited access mechanisms. AWS Shield Standard: Built-in, no-cost protection against layer 3 and 4 DDoS attacks on all distributions. CloudFront is not just fast — it’s fortified with robust security capabilities.\n"
 },
 {
 	"uri": "//localhost:1313/en/3-accessawslambda/3.2-addcodetohandlesecurityheaders/",
@@ -63,20 +35,6 @@
 	"content": "Add the following code to your Lambda function:\n\u0026#39;use strict\u0026#39;;\rexport const handler = async (event) =\u0026gt; {\rconst response = event.Records[0].cf.response;\rconst headers = response.headers;\rheaders[\u0026#39;strict-transport-security\u0026#39;] = [\r{ key: \u0026#39;Strict-Transport-Security\u0026#39;, value: \u0026#39;max-age=63072000; includeSubDomains; preload\u0026#39; }\r];\rheaders[\u0026#39;content-security-policy\u0026#39;] = [\r{ key: \u0026#39;Content-Security-Policy\u0026#39;, value: \u0026#34;default-src \u0026#39;self\u0026#39;\u0026#34; }\r];\rheaders[\u0026#39;x-content-type-options\u0026#39;] = [\r{ key: \u0026#39;X-Content-Type-Options\u0026#39;, value: \u0026#39;nosniff\u0026#39; }\r];\rheaders[\u0026#39;x-frame-options\u0026#39;] = [\r{ key: \u0026#39;X-Frame-Options\u0026#39;, value: \u0026#39;DENY\u0026#39; }\r];\rheaders[\u0026#39;x-xss-protection\u0026#39;] = [\r{ key: \u0026#39;X-XSS-Protection\u0026#39;, value: \u0026#39;1; mode=block\u0026#39; }\r];\rreturn response;\r}; "
 },
 {
-	"uri": "//localhost:1313/en/6-costoptimization/6.2-createacustomcachepolicy/",
-	"title": "Create a Custom Cache Policy",
-	"tags": [],
-	"description": "",
-	"content": "Go to CloudFront → Policies \u0026gt; Cache policies\nClick Create cache policy\nName: CustomLongTTLPolicy\rDescription: Long-lived cache for static content\rMinimum TTL: 1\rDefault TTL: 86400\rMaximum TTL: 31536000\rHeaders: None\rQuery strings: None\rCookies: None\rCompression: Gzip, Brotli "
-},
-{
-	"uri": "//localhost:1313/en/7-monitoringandlogging/7.2-createagluedatabase/",
-	"title": "Create a Glue Database",
-	"tags": [],
-	"description": "",
-	"content": "Go to the AWS Glue Console\nSelect the Databases tab → Click Add database\nSet the name: cloudfront_logs_db\nClick Create\n"
-},
-{
 	"uri": "//localhost:1313/en/2-prerequiste/2.2-createcloudfrontdistribution/",
 	"title": "Create CloudFront Distribution",
 	"tags": [],
@@ -84,60 +42,18 @@
 	"content": "Step 1: Create a CloudFront Distribution Click on: Create a CloudFront distribution\nDistribution name: webbadmintonvideo_Distribution\nDescription: CDN for static site hosted on S3\nDistribution type: Select Single website or app\nClick: Next\nStep 2: Select Origin Choose: Amazon S3 S3 origin: webbadmintonvideo.s3-website-us-east-1.amazonaws.com Check: Enable security protections Step 3: Review Your Settings Distribution name Origin Security settings Step 4: Select Legacy Access Identities Step 5: Add Path Pattern for Images Path pattern: /images/* Origin: webbadmintonvideo.s3-website-us-east-1.amazonaws.com Compress objects automatically: Yes Viewer protocol policy: Redirect HTTP to HTTPS Allowed HTTP methods: GET, HEAD Restrict viewer access: No "
 },
 {
-	"uri": "//localhost:1313/en/4-enablesignedurls/4.2-createakeygroup/",
-	"title": "Create Key Group",
-	"tags": [],
-	"description": "",
-	"content": "\nFill in the information: Name: my-key-group\nDescription (optional): Key group for signed URL\nPublic keys: Check the public key you just created (e.g., my-signed-url-key)\nClick Create key group "
-},
-{
-	"uri": "//localhost:1313/en/8-cleanupawsresources/8.2-deletes3buckets/",
-	"title": "Delete S3 Buckets",
-	"tags": [],
-	"description": "",
-	"content": " Including: Bucket hosting the static website Bucket storing CloudFront logs Go to S3 Console → Empty bucket → Delete bucket Type: permanently delete\nSelect: Delete\nBucket name: webbadmintonvideo\nSuccessfully deleted\n"
-},
-{
 	"uri": "//localhost:1313/en/2-prerequiste/",
-	"title": "Preparation ",
+	"title": "Preparation Steps",
 	"tags": [],
 	"description": "",
-	"content": "\rYou need to create 1 Linux instance on the public subnet and 1 Window instance on the private subnet to perform this lab.\nTo learn how to create EC2 instances and VPCs with public/private subnets, you can refer to the lab:\nAbout Amazon EC2 Works with Amazon VPC In order to use System Manager to manage our window instances in particular and our instances in general on AWS, we need to give permission to our instances to be able to work with System Manager. In this preparation, we will also proceed to create an IAM Role to grant permissions to instances that can work with System Manager.\nContent Prepare VPC and EC2 Create IAM Role Create RDS "
-},
-{
-	"uri": "//localhost:1313/en/6-costoptimization/6.3-attachcachepolicytobehaviors/",
-	"title": "Attach Cache Policy to Behaviors",
-	"tags": [],
-	"description": "",
-	"content": "Go to CloudFront \u0026gt; Distributions\nOpen the Behaviors tab\nClick Edit on the desired behavior\nCache policy name:\nSelect: CustomLongTTLPolicy\nClick Save changes\n⚠️ Note: Do not assign this policy to /index.html if you need the content to always stay updated.\n"
-},
-{
-	"uri": "//localhost:1313/en/4-enablesignedurls/4.3-attachkeygrouptocloudfrontbehavior/",
-	"title": "Attach Key Group to CloudFront Behavior",
-	"tags": [],
-	"description": "",
-	"content": "Go to CloudFront \u0026gt; Distributions\nSelect the Behaviors tab\nScroll down to Restrict viewer access (use signed URLs or signed cookies) Select Yes Under Trusted key groups Check the key group you just created (my-key-group) Click Save changes "
+	"content": "To implement CloudFront Advanced Caching and Security, we need to prepare the basic infrastructure, including an S3 bucket to store the static website and a CloudFront Distribution to deliver content through AWS’s global edge network. In addition, we need to configure appropriate IAM Roles and Policies to ensure that CloudFront, Lambda@Edge, and S3 can interact securely. Contents Create S3 Create CloudFront Distribution "
 },
 {
 	"uri": "//localhost:1313/en/3-accessawslambda/",
-	"title": "Connect to EC2 servers",
+	"title": "Access AWS Lambda",
 	"tags": [],
 	"description": "",
-	"content": "In this step, we will connect to our EC2 servers, located in both the public and private subnets.\nContent 3.1. Mục Tiêu 3.2. Kích hoạt Signed URLs\n"
-},
-{
-	"uri": "//localhost:1313/en/7-monitoringandlogging/7.3-createagluecrawler/",
-	"title": "Create Glue Crawler",
-	"tags": [],
-	"description": "",
-	"content": "Go to Glue → Crawlers tab → Click Create crawler\n1. Crawler info Name: cf-log-crawler Description (optional): Crawler to scan CloudFront access logs in S3 and build an Athena table. Paste the path to the folder that contains your CloudFront logs\nClick the Run crawler button\nWait about 1–3 minutes\n"
-},
-{
-	"uri": "//localhost:1313/en/8-cleanupawsresources/8.3-deletelambda@edgefunctions/",
-	"title": "Delete Lambda@Edge Functions",
-	"tags": [],
-	"description": "",
-	"content": " Go to Lambda Console in us-east-1\nFind the AddSecurityHeaders function or any other function used in the lab\nDelete the published versions\nThen Delete the function\n"
+	"content": "Introduction:\nIn this step, we will deploy AWS Lambda@Edge to perform advanced processing on requests and responses of the CloudFront Distribution.\nThe main goal is to add security headers to the responses returned to the users, thereby enhancing the security of the website distributed via CloudFront.\nContent 3.1. Create a Lambda function\n3.2. Add code to handle security headers\n3.3. Grant IAM permissions to the Lambda function\n3.4. Attach the Lambda to a Behavior in CloudFront\n3.5. Create and assign an Origin Access Identity\n"
 },
 {
 	"uri": "//localhost:1313/en/3-accessawslambda/3.3-grantiampermissionstothelambdafunction/",
@@ -147,13 +63,6 @@
 	"content": "Go to Roles\nSearch for the role named: LambdaEdgeSecurityRole\nSelect the Trust relationships tab -\u0026gt; Edit trust policy\nReplace the trust policy content:\n{\r\u0026#34;Version\u0026#34;: \u0026#34;2012-10-17\u0026#34;,\r\u0026#34;Statement\u0026#34;: [\r{\r\u0026#34;Effect\u0026#34;: \u0026#34;Allow\u0026#34;,\r\u0026#34;Principal\u0026#34;: {\r\u0026#34;Service\u0026#34;: [\r\u0026#34;lambda.amazonaws.com\u0026#34;,\r\u0026#34;edgelambda.amazonaws.com\u0026#34;\r]\r},\r\u0026#34;Action\u0026#34;: \u0026#34;sts:AssumeRole\u0026#34;\r}\r]\r} Version description: V1 -\u0026gt; Publish\n"
 },
 {
-	"uri": "//localhost:1313/en/4-enablesignedurls/",
-	"title": "Access aws lambda",
-	"tags": [],
-	"description": "",
-	"content": "With Session Manager, we can view the history of connections to instances through Session history. However, we have not seen the details of the commands used in a session.\nIn this section, we will proceed to create an S3 bucket and configure the session logs feature to see the details of the commands used in the session.\nContent: Update IAM Role Create S3 Bucket Create S3 Gateway endpoint Configure Session logs "
-},
-{
 	"uri": "//localhost:1313/en/3-accessawslambda/3.4-attachlambdatoabehaviorincloudfront/",
 	"title": "Associate Lambda with a Behavior in CloudFront",
 	"tags": [],
@@ -161,25 +70,11 @@
 	"content": "Go to CloudFront -\u0026gt; Select the distribution -\u0026gt; Open the Behaviors tab -\u0026gt; Click on /index.html -\u0026gt; Click Edit.\nFunction type: Lambda@Edge\nFunction ARN: arn:aws:lambda:us-east-1:806361468439:function:AddSecurityHeaders:3\nClick: Save changes\n"
 },
 {
-	"uri": "//localhost:1313/en/8-cleanupawsresources/8.4-deleteiamrolesandpoliciescreatedforthelab/",
-	"title": "Delete IAM Roles and Policies Created for the Lab",
+	"uri": "//localhost:1313/en/4-enablesignedurls/",
+	"title": "Create CloudFront Key Pair",
 	"tags": [],
 	"description": "",
-	"content": " Examples: LambdaEdgeSecurityRole IAM user/role used for Signed URLs Go to IAM Console → Delete role "
-},
-{
-	"uri": "//localhost:1313/en/4-enablesignedurls/4.4-generateasignedurlusingpython/",
-	"title": "Generate a Signed URL using Python",
-	"tags": [],
-	"description": "",
-	"content": "Install Python\nlink :https://www.python.org/downloads/windows/\nAfter completing the installation above,\nopen your terminal.\nRun the following command to install the required library:\npip install cryptography\nNavigate to the folder containing the private_key.pem file and open it in VS Code.\nimport base64\rimport time\rfrom cryptography.hazmat.primitives import serialization, hashes\rfrom cryptography.hazmat.primitives.asymmetric import padding\rcloudfront_url = \u0026#34;https://dwlpqynbljc1b.cloudfront.net/index.html\u0026#34; key_pair_id = \u0026#34;K31UET7UCHMLP6\u0026#34; private_key_file = \u0026#34;private_key.pem\u0026#34; expire_time = int(time.time()) + 3600 policy = f\u0026#39;\u0026#39;\u0026#39;{{\u0026#34;Statement\u0026#34;:[{{\u0026#34;Resource\u0026#34;:\u0026#34;{cloudfront_url}\u0026#34;,\u0026#34;Condition\u0026#34;:{{\u0026#34;DateLessThan\u0026#34;:{{\u0026#34;AWS:EpochTime\u0026#34;:{expire_time}}}}}}}]}}\u0026#39;\u0026#39;\u0026#39;\rwith open(private_key_file, \u0026#34;rb\u0026#34;) as key_file:\rprivate_key = serialization.load_pem_private_key(\rkey_file.read(),\rpassword=None,\r)\rsignature = private_key.sign(\rpolicy.encode(),\rpadding.PKCS1v15(),\rhashes.SHA1()\r)\rdef url_safe_b64encode(data):\rreturn base64.b64encode(data).decode(\u0026#34;utf-8\u0026#34;)\\\r.replace(\u0026#34;+\u0026#34;, \u0026#34;-\u0026#34;)\\\r.replace(\u0026#34;=\u0026#34;, \u0026#34;_\u0026#34;)\\\r.replace(\u0026#34;/\u0026#34;, \u0026#34;~\u0026#34;)\rencoded_signature = url_safe_b64encode(signature)\rencoded_policy = url_safe_b64encode(policy.encode())\rsigned_url = f\u0026#34;{cloudfront_url}?Policy={encoded_policy}\u0026amp;Signature={encoded_signature}\u0026amp;Key-Pair-Id={key_pair_id}\u0026#34;\rprint(\u0026#34;🎯 Signed URL:\u0026#34;)\rprint(signed_url) Note:\nUse the correct domain name from AWS CloudFront.\nReplace with your actual Key Pair ID.\nTo run the .py file, go to the folder where it is saved and execute:\nIt will print:\n"
-},
-{
-	"uri": "//localhost:1313/en/6-costoptimization/6.4-optimizettlandlimitlogging/",
-	"title": "Optimize TTL and Limit Logging",
-	"tags": [],
-	"description": "",
-	"content": "Step 1: Access the log bucket Go to AWS Console → S3\nFind and click on the bucket: webbadmintonvideo\nStep 2: Open the Management tab Inside the bucket, go to the Management tab\nClick the Create lifecycle rule button\nStep 3: Name the rule: ExpireCloudFrontLogs Check: Limit the scope of this rule using one or more filters\nPrefix: AWSLogs/your-account-id/CloudFront/\nNote: Replace your-account-id with your actual AWS account ID.\nUnder Lifecycle rule actions, check:\nExpire current versions of objects\nEnter number of days: 30\nThe confirmation screen shows that the Lifecycle Rule has been successfully configured:\n"
+	"content": "Step 1: Create a CloudFront Key Pair Go to the Security tab → Key management\nClick Create public key\nName: CloudFrontPublicKey\nDownload the .pem file (public key)\nStep 2: Paste into the key After creating the public key\nCreate a Key Group Fill in the details: Name: my-key-group\nDescription (optional): Key group for signed URL\nPublic keys: Select the public key you just created (e.g., my-signed-url-key)\nClick Create key group Assign the Key Group to a CloudFront Behavior Go to CloudFront \u0026gt; Distributions\nOpen the Behaviors tab\nScroll down to Restrict viewer access (use signed URLs or signed cookies) Select Yes In Trusted key groups Check the key group you just created (my-key-group) Click Save changes Generate a Signed URL with Python Install Python first\nlink: https://www.python.org/downloads/windows/\nAfter installation,\nOpen the terminal and run the following command to install the library:\npip install cryptography\nNavigate to the folder containing private_key.pem, then open VS Code\nimport base64 import time from cryptography.hazmat.primitives import serialization, hashes from cryptography.hazmat.primitives.asymmetric import padding cloudfront_url = \u0026#34;https://dwlpqynbljc1b.cloudfront.net/index.html\u0026#34; key_pair_id = \u0026#34;K31UET7UCHMLP6\u0026#34; private_key_file = \u0026#34;private_key.pem\u0026#34; expire_time = int(time.time()) + 3600 policy = f\u0026#39;\u0026#39;\u0026#39;{{\u0026#34;Statement\u0026#34;:[{{\u0026#34;Resource\u0026#34;:\u0026#34;{cloudfront_url}\u0026#34;,\u0026#34;Condition\u0026#34;:{{\u0026#34;DateLessThan\u0026#34;:{{\u0026#34;AWS:EpochTime\u0026#34;:{expire_time}}}}}}}]}}\u0026#39;\u0026#39;\u0026#39; with open(private_key_file, \u0026#34;rb\u0026#34;) as key_file: private_key = serialization.load_pem_private_key( key_file.read(), password=None, ) signature = private_key.sign( policy.encode(), padding.PKCS1v15(), hashes.SHA1() ) def url_safe_b64encode(data): return base64.b64encode(data).decode(\u0026#34;utf-8\u0026#34;)\\ .replace(\u0026#34;+\u0026#34;, \u0026#34;-\u0026#34;)\\ .replace(\u0026#34;=\u0026#34;, \u0026#34;_\u0026#34;)\\ .replace(\u0026#34;/\u0026#34;, \u0026#34;~\u0026#34;) encoded_signature = url_safe_b64encode(signature) encoded_policy = url_safe_b64encode(policy.encode()) signed_url = f\u0026#34;{cloudfront_url}?Policy={encoded_policy}\u0026amp;Signature={encoded_signature}\u0026amp;Key-Pair-Id={key_pair_id}\u0026#34; print(\u0026#34;🎯 Signed URL:\u0026#34;) print(signed_url) **Notes:\nThe domain name must match the one in AWS CloudFront\nUse the correct Key Pair ID\nIn the folder containing the .py file, run:\nIt will output:\n"
 },
 {
 	"uri": "//localhost:1313/en/3-accessawslambda/3.5-createandassignoriginaccessidentity/",
@@ -187,13 +82,6 @@
 	"tags": [],
 	"description": "",
 	"content": "Go to CloudFront -\u0026gt; Select your distribution -\u0026gt; Open the Origins tab -\u0026gt; Click Edit -\u0026gt; Create a new OAI\nName: webbadmintonvideo.s3.us-east-1.amazonaws.com\nClick: Create\nDistribution domain name\ndwlpqynbljc1b.cloudfront.net/index.html\n"
-},
-{
-	"uri": "//localhost:1313/en/8-cleanupawsresources/8.5-deletecloudfrontkeygroupsandpublickeys/",
-	"title": "Deleting CloudFront Key Groups and Public Keys",
-	"tags": [],
-	"description": "",
-	"content": " Go to CloudFront → Key management\nDelete:\nPublic key (CloudFrontPublicKey, FLE-PublicKey)\nKey group (my-key-group)\n"
 },
 {
 	"uri": "//localhost:1313/en/5-field-levelencryption/",
@@ -204,31 +92,24 @@
 },
 {
 	"uri": "//localhost:1313/en/6-costoptimization/",
-	"title": "Cost Optimization",
+	"title": "Enable Compression and Redirect to HTTPS",
 	"tags": [],
 	"description": "",
-	"content": "We will take the following steps to delete the resources we created in this exercise.\nDelete EC2 instance Go to EC2 service management console\nClick Instances. Select both Public Linux Instance and Private Windows Instance instances. Click Instance state. Click Terminate instance, then click Terminate to confirm. Go to IAM service management console\nClick Roles. In the search box, enter SSM. Click to select SSM-Role. Click Delete, then enter the role name SSM-Role and click Delete to delete the role. Click Users. Click on user Portfwd. Click Delete, then enter the user name Portfwd and click Delete to delete the user. Delete S3 bucket Access System Manager - Session Manager service management console.\nClick the Preferences tab. Click Edit. Scroll down. In the section S3 logging. Uncheck Enable to disable logging. Scroll down. Click Save. Go to S3 service management console\nClick on the S3 bucket we created for this lab. (Example: lab-fcj-bucket-0001 ) Click Empty. Enter permanently delete, then click Empty to proceed to delete the object in the bucket. Click Exit. After deleting all objects in the bucket, click Delete\nEnter the name of the S3 bucket, then click Delete bucket to proceed with deleting the S3 bucket. Delete VPC Endpoints Go to VPC service management console Click Endpoints. Select the 4 endpoints we created for the lab including SSM, SSMMESSAGES, EC2MESSAGES, S3GW. Click Actions. Click Delete VPC endpoints. In the confirm box, enter delete.\nClick Delete to proceed with deleting endpoints. Click the refresh icon, check that all endpoints have been deleted before proceeding to the next step.\nDelete VPC Go to VPC service management console\nClick Your VPCs. Click on Lab VPC. Click Actions. Click Delete VPC. In the confirm box, enter delete to confirm, click Delete to delete Lab VPC and related resources.\n"
-},
-{
-	"uri": "//localhost:1313/en/8-cleanupawsresources/8.6-deleteglueandlogdata/",
-	"title": "Delete Glue and Log Data",
-	"tags": [],
-	"description": "",
-	"content": " Glue Crawler (cf-log-crawler) → Delete\nGlue Database (cloudfront_logs_db) → Delete\nAction: Delete Crawlers\nDelete Glue Database In Glue Console → Databases tab\nFind the database cloudfront_logs_db\nSelect Delete → Confirm\n"
+	"content": "Go to the Behaviors tab\nFind the row with Path pattern = Default (*)\nClick Edit\nScroll down to the Response headers policy section\nSelect: Managed-SecurityHeadersPolicy\nClick Save changes\nCreate a Custom Cache Policy Go to CloudFront → Policies \u0026gt; Cache policies\nClick Create cache policy\nName: CustomLongTTLPolicy\rDescription: Long-lived cache for static content\rMinimum TTL: 1\rDefault TTL: 86400\rMaximum TTL: 31536000\rHeaders: None\rQuery strings: None\rCookies: None\rCompression: Gzip, Brotli Assign the Cache Policy to Behaviors Go to CloudFront \u0026gt; Distributions\nOpen the Behaviors tab\nClick Edit on the desired behavior\nCache policy name:\nSelect: CustomLongTTLPolicy\nClick Save changes\n⚠️ Note: Do not assign this policy to /index.html if you require the content to always be up to date.\nOptimize TTL and Limit Logging Step 1: Access the log bucket Go to AWS Console → S3 Locate and click on the bucket: webbadmintonvideo Step 2: Open the Management tab Inside the bucket, select the Management tab Click Create lifecycle rule Step 3: Name the rule: ExpireCloudFrontLogs Check: Limit the scope of this rule using one or more filters\nEnter: AWSLogs/your-account-id/CloudFront/\nNote: Replace your-account-id with your AWS account ID.\nIn Lifecycle rule actions, check: Expire current versions of objects\nEnter number of days: 30\nConfirmation screen showing that the Lifecycle Rule has been successfully configured\n"
 },
 {
 	"uri": "//localhost:1313/en/7-monitoringandlogging/",
-	"title": "Tạo Glue Crawler",
+	"title": "Create an S3 Bucket for Logs",
 	"tags": [],
 	"description": "",
-	"content": ""
+	"content": "Go to AWS S3 Console\nClick Create bucket\nEnter the bucket name, for example: cloudfront-logs-2025-demo\nDisable \u0026ldquo;Block all public access\u0026rdquo;\nEnable versioning\nClick Create bucket\nCreate a Glue Database Go to AWS Glue Console\nSelect the Databases tab → Click Add database\nName it: cloudfront_logs_db\nClick Create\n"
 },
 {
 	"uri": "//localhost:1313/en/8-cleanupawsresources/",
-	"title": "Clean up AWS resources",
+	"title": "Delete CloudFront Distribution",
 	"tags": [],
 	"description": "",
-	"content": ""
+	"content": " Go to CloudFront Console Select the created Distribution → Disable After the status changes to Disabled, select Delete Delete S3 Buckets Includes: The bucket containing the static website The bucket containing CloudFront logs Go to S3 Console → Empty bucket → Delete bucket Type: permanently delete\nSelect: Delete\nBucket name: webbadmintonvideo\nSuccessfully deleted\nDelete Lambda@Edge Functions Go to Lambda Console in us-east-1\nFind the AddSecurityHeaders function or other functions used in the lab\nDelete the published versions\nThen Delete function\nDelete IAM Roles and Policies created for the lab Examples: LambdaEdgeSecurityRole IAM user/role used for Signed URLs Go to IAM Console → Delete role Delete CloudFront Key Groups and Public Keys Go to CloudFront → Key management Delete: Public key (CloudFrontPublicKey, FLE-PublicKey) Key group (my-key-group) Delete Glue and Log Data Glue Crawler (cf-log-crawler) → Delete\nGlue Database (cloudfront_logs_db) → Delete\nAction: Delete Crawlers\nDelete Glue Database In Glue Console → Databases tab\nFind the database cloudfront_logs_db\nSelect Delete → Confirm\n"
 },
 {
 	"uri": "//localhost:1313/en/categories/",

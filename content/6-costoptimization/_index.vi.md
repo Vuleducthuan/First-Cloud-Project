@@ -1,84 +1,106 @@
-+++
-title = "Tối ưu hóa chi phí"
-date = "2025-06-14"
-weight = 6
-chapter = false
-pre = "<b>6. </b>"
-+++
+---
+title: "Bật Compression và Redirect HTTPS"
+date: "2025-06-14"
+weight: 6
+chapter: false
+pre: "<b> 6. </b>"
+---
 
+Vào tab **Behaviors**
 
-Chúng ta sẽ tiến hành các bước sau để xóa các tài nguyên chúng ta đã tạo trong bài thực hành này.
+Tìm dòng có **Path pattern** = Default (\*)
 
-#### Xóa EC2 instance
+Nhấn **Edit**
 
-1. Truy cập [giao diện quản trị dịch vụ EC2](https://console.aws.amazon.com/ec2/v2/home)
-  + Click **Instances**.
-  + Click chọn cả 2 instance **Public Linux Instance** và **Private Windows Instance**. 
-  + Click **Instance state**.
-  + Click **Terminate instance**, sau đó click **Terminate** để xác nhận.
+![s3](/images/6.clean/1.png)
 
-2. Truy cập [giao diện quản trị dịch vụ IAM](https://console.aws.amazon.com/iamv2/home#/home)
-  + Click **Roles**.
-  + Tại ô tìm kiếm , điền **SSM**.
-  + Click chọn **SSM-Role**.
-  + Click **Delete**, sau đó điền tên role **SSM-Role** và click **Delete** để xóa role.
-  
-![Clean](/images/6.clean/001-clean.png)
+![s3](/images/6.clean/2.png)
 
-3. Click **Users**.
-  + Click chọn user **Portfwd**.
-  + Click **Delete**, sau đó điền tên user **Portfwd** và click **Delete** để xóa user.
+Cuộn xuống phần Response headers policy
 
-#### Xóa S3 bucket
+- Chọn: **Managed-SecurityHeadersPolicy**
 
-1. Truy cập [giao diện quản trị dịch vụ System Manager - Session Manager](https://console.aws.amazon.com/systems-manager/session-manager).
-  + Click tab **Preferences**.
-  + Click **Edit**.
-  + Kéo chuột xuống dưới.
-  + Tại mục **S3 logging**.
-  + Bỏ chọn **Enable** để tắt tính năng logging.
-  + Kéo chuột xuống dưới.
-  + Click **Save**.
+- Nhấn **Save changes**
 
-2. Truy cập [giao diện quản trị dịch vụ S3](https://s3.console.aws.amazon.com/s3/home)
-  + Click chọn S3 bucket chúng ta đã tạo cho bài thực hành. ( Ví dụ : lab-fcj-bucket-0001 )
-  + Click **Empty**.
-  + Điền **permanently delete**, sau đó click **Empty** để tiến hành xóa object trong bucket.
-  + Click **Exit**.
+![s3](/images/6.clean/3.png)
 
-3. Sau khi xóa hết object trong bucket, click **Delete**
+![s3](/images/6.clean/4.png)
 
-![Clean](/images/6.clean/002-clean.png)
+## Tạo Custom Cache Policy
 
-4. Điền tên S3 bucket, sau đó click **Delete bucket** để tiến hành xóa S3 bucket.
+Vào **CloudFront** → **Policies** > **Cache policies**
 
-![Clean](/images/6.clean/003-clean.png)
+Nhấn **Create cache policy**
 
-#### Xóa các VPC Endpoint
+![s3](/images/6.clean/5.png)
 
-1. Truy cập vào [giao diện quản trị dịch vụ VPC](https://console.aws.amazon.com/vpc/home)
-  + Click **Endpoints**.
-  + Chọn 4 endpoints chúng ta đã tạo cho bài thực hành bao gồm **SSM**, **SSMMESSAGES**, **EC2MESSAGES**, **S3GW**.
-  + Click **Actions**.
-  + Click **Delete VPC endpoints**.
+```
+Name:CustomLongTTLPolicy
+Description:Long-lived cache for static content
+Minimum TTL: 1
+Default TTL:86400
+Maximum TTL:31536000
+Headers:None
+Query strings:None
+Cookies:None
+Compression:Gzip, Brotli
 
-![Clean](/images/6.clean/004-clean.png)
+```
+![s3](/images/6.clean/6.png)
 
-2. Tại ô confirm , điền **delete**.
-  + Click **Delete** để tiến hành xóa các endpoints.
+![s3](/images/6.clean/7.png)
 
-3. Click biểu tượng refresh, kiểm tra tất cả các endpoints đã bị xóa trước khi làm bước tiếp theo.
+## Gán Cache Policy vào các Behavior
 
-![Clean](/images/6.clean/005-clean.png)
+Truy cập **CloudFront** > **Distributions**
 
-#### Xóa VPC
+Vào **tab Behaviors**
 
-1. Truy cập vào [giao diện quản trị dịch vụ VPC](https://console.aws.amazon.com/vpc/home)
-  + Click **Your VPCs**.
-  + Click chọn **Lab VPC**.
-  + Click **Actions**.
-  + Click **Delete VPC**.
+Nhấn **Edit** ở behavior
 
-2. Tại ô confirm, điền **delete** để xác nhận, click **Delete** để thực hiện xóa **Lab VPC** và các tài nguyên liên quan.
+**Cache policy name:**
 
-![Clean](/images/6.clean/006-clean.png)
+Chọn: **CustomLongTTLPolicy**
+
+Nhấn **Save changes**
+
+⚠️ Lưu ý: Không nên gán policy này cho /index.html nếu bạn cần nội dung luôn cập nhật.
+
+![s3](/images/6.clean/8.png)
+
+![s3](/images/6.clean/9.png)
+
+## Tối ưu TTL và giới hạn Logging
+
+## Bước 1: Truy cập bucket log
+
+1.	Vào **AWS Console** → **S3**
+
+2.	Tìm và nhấn vào **bucket** : **webbadmintonvideo**
+
+![s3](/images/6.clean/10.png)
+
+## Bước 2: Mở tab Management
+1.	Trong **bucket** → chọn **tab Management**
+
+2.	Nhấn nút **Create lifecycle rule**
+
+![s3](/images/6.clean/11.png)
+
+## Bước 3: Đặt tên rule: ExpireCloudFrontLogs
+
+Tick: Limit the scope of this rule using one or more filters
+
+AWSLogs/your-account-id/CloudFront/
+
+**Lưu ý**: Thay” your-account-id” bằng mã tài khoản AWS
+
+**Lifecycle rule actions**, tick: Expire current versions of objects
+
+Nhập số ngày:30
+
+![s3](/images/6.clean/12.png)
+
+Giao diện xác nhận Lifecycle Rule đã được cấu hình thành công
+
+![s3](/images/6.clean/13.png)
